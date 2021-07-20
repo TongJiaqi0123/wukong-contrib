@@ -259,9 +259,9 @@ class NeteaseMusicPlayer(MusicPlayer):
                         # 提取秒数
                         time_sec = float(time_info_list[1])
                         # 合并时间
-                        time = time_min * 60 + time_sec
+                        time1 = time_min * 60 + time_sec
                         # 保存到歌词字典中
-                        lrc_dict[time] = lrc_info
+                        lrc_dict[time1] = lrc_info
                 else:
                     # 去掉两边的[]
                     string = string[1:-1]
@@ -276,8 +276,7 @@ class NeteaseMusicPlayer(MusicPlayer):
             time_list.sort(reverse=True)
             
             # 此处向下都是测试代码
-            import time
-            import os
+            
             t = 0
             last_lrc = None
 
@@ -287,8 +286,9 @@ class NeteaseMusicPlayer(MusicPlayer):
                     # 清除原来的显示
                     os.system('cls')
                     last_lrc = lrc
-                    print(lrc)
-                t += 0.5           
+                    logger.info(lrc)
+                t += 0.5
+                time.sleep(0.5)
             
     def next(self):
         logger.debug('NeteaseMusicPlayer next')
