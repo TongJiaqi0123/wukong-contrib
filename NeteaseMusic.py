@@ -209,6 +209,14 @@ class NeteaseMusicPlayer(MusicPlayer):
             logger.info('目前播放的歌曲是{}, 歌手是{}'.format(self.playlist[self.idx]['song_name'], self.playlist[self.idx]['artist']))
             super(MusicPlayer, self).stop()
             super(MusicPlayer, self).play(path, False, self.next)
+            headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36 QIHU 360SE','Refer':'http://music.163.com','Host':'music.163.com'}
+            url = 'http://music.163.com/api/song/lyric?id='+format(self.playlist[self.idx]['song_id'])+'&lv=1&kv=1&tv=-1'
+            res= requests.get(url,headers=headers)
+            lyric = res.text
+            json_obj = json.loads(lyric)
+            lyric = json_obj['lrc']['lyric']
+            lyric = re.sub(r'[\d:.[\]]','', lyric)
+            logger.info(lyric)
 
     def next(self):
         logger.debug('NeteaseMusicPlayer next')
