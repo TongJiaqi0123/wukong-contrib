@@ -281,7 +281,7 @@ class NeteaseMusicPlayer(MusicPlayer):
             last_lrc = None
 
             while True:
-                lrc = get_lrc_by_time(t)
+                lrc = super(MusicPlayer, self).get_lrc_by_time(t)
                 if last_lrc != lrc:
                     # 清除原来的显示
                     os.system('cls')
