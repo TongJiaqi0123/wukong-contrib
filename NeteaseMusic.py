@@ -197,7 +197,7 @@ class NeteaseMusicPlayer(MusicPlayer):
         self.storage.user_playlist(self.pack_info(datalist, "playlist_id", "playlist_name"))
         
     # 封装函数：根据时间返回歌词
-    def get_lrc_by_time(t):
+    def get_lrc_by_time(self,t):
         for i in time_list:
             if i <= t:
                 tt = i
@@ -281,7 +281,7 @@ class NeteaseMusicPlayer(MusicPlayer):
             last_lrc = None
 
             while True:
-                lrc = super.get_lrc_by_time(t)
+                lrc = self.get_lrc_by_time(t)
                 if last_lrc != lrc:
                     # 清除原来的显示
                     os.system('cls')
