@@ -218,70 +218,85 @@ class NeteaseMusicPlayer(MusicPlayer):
             lyric = json_obj['lrc']['lyric']
             #lyric = re.sub(r'[\d:.[\]]','', lyric)
             logger.info(lyric)
-            #song_dict = {}
-            #lrc_dict = {}
-            #str_list = lyric.splitlines()
-            #for string in str_list:
-            # 判断是否是歌词信息
-            #if string[1].isdecimal():
-            # [02:11.55][01:50.60][00:22.63]穿过幽暗的岁月
-            # 按照’]‘进行切割
-           # lrc_list = string.split(’]’)
-            # 提取歌词信息
-            #lrc_info = lrc_list[-1]
-            # 提取时间信息
-            #time_info = lrc_list[:-1]
-            # 遍历处理时间信息
-           # for time_str in time_info:
-            # [00:00.70
-            # 去掉左边的’[’
-            #time_str = time_str[1:]
-            # 00:00.70
-            # 按照’:‘进行切割
-            #time_info_list = time_str.split(’:’)
-            # 提取分钟
-            #time_min = float(time_info_list[0])
-            # 提取秒数
-            #time_sec = float(time_info_list[1])
-            # 合并时间
-            #time = time_min * 60 + time_sec
-            # 保存到歌词字典中
-            #lrc_dict[time] = lrc_info
-            #else:
-            # 去掉两边的[]
-            #string = string[1:-1]
-            # 按照’:‘进行切割
-            #song_list = string.split(’:’)
-            # 保存到歌曲字典中
-            #if song_list[0] == ‘ti’:
-            #song_dict[‘标题’] = song_list[1]
-            #elif song_list[0] == ‘ar’:
-            #song_dict[‘艺术家’] = song_list[1]
-            #elif song_list[0] == ‘al’:
-            #song_dict[‘专辑’] = song_list[1]
-            #time_list = list(lrc_dict)
-            #time_list.sort(reverse=True)
-            #t = 0
-            #last_lrc = None
-           # while True:
-                #lrc = get_lrc_by_time(t)
-                #if last_lrc != lrc:
-                 # 清除原来的显示
-                #os.system(‘cls’)
-                #last_lrc = lrc
-            #for s in song_dict:
-                #print(s, song_dict[s])
-                #print(lrc)
-                #t += 0.5
-                #time.sleep(0.5)
+            # 准备一个字典，用来保存歌曲信息
+            song_dict = {}
+            # 准备一个字典，用来保存歌词信息
+            lrc_dict = {}
+            # 按照换行进行切割
+            str_list = lyric.splitlines()
+            # 遍历处理
+            for string in str_list:
+                # 判断是否是歌词信息
+                if string[1].isdecimal():
+                    # [02:11.55][01:50.60][00:22.63]穿过幽暗的岁月
+                    # 按照']'进行切割
+                    lrc_list = string.split(']')
+                    # 提取歌词信息
+                    lrc_info = lrc_list[-1]
+                    # 提取时间信息
+                    time_info = lrc_list[:-1]
+                    # 遍历处理时间信息
+                    for time_str in time_info:
+                        # [00:00.70
+                        # 去掉左边的'['
+                        time_str = time_str[1:]
+                        # 00:00.70
+                        # 按照':'进行切割
+                        time_info_list = time_str.split(':')
+                        # 提取分钟
+                        time_min = float(time_info_list[0])
+                        # 提取秒数
+                        time_sec = float(time_info_list[1])
+                        # 合并时间
+                        time = time_min * 60 + time_sec
+                        # 保存到歌词字典中
+                        lrc_dict[time] = lrc_info
+                else:
+                    # 去掉两边的[]
+                    string = string[1:-1]
+                    # 按照':'进行切割
+                    song_list = string.split(':')
+                    # 保存到歌曲字典中
+                    if song_list[0] == 'ti':
+                        song_dict['标题'] = song_list[1]
+                    elif song_list[0] == 'ar':
+                        song_dict['艺术家'] = song_list[1]
+                    elif song_list[0] == 'al':
+                        song_dict['专辑'] = song_list[1]
 
 
-   # def get_lrc_by_time(t):
-        #for i in time_list:
-             #if i <= t:
-                   # tt = i
-                   # break
-        #return lrc_dict[tt]
+            # 提取歌词字典中所有的键
+            time_list = list(lrc_dict)
+            # 排序
+            time_list.sort(reverse=True)
+            
+            # 此处向下都是测试代码
+            t = 0
+            last_lrc = None
+            while True:
+                lrc = get_lrc_by_time(t)
+                if last_lrc != lrc:
+                    # 清除原来的显示
+                    os.system('cls')
+                    last_lrc = lrc
+                    for s in song_dict:
+                        logger.info(s, song_dict[s])
+                    logger.info(lrc)
+                t += 0.5
+                time.sleep(0.5)
+
+
+    # 封装函数：根据时间返回歌词
+    def get_lrc_by_time(t):
+        for i in time_list:
+            if i <= t:
+                tt = i
+                break
+        return lrc_dict[tt]
+
+
+
+
 
     def next(self):
         logger.debug('NeteaseMusicPlayer next')
