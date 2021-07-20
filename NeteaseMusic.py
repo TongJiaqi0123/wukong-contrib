@@ -215,7 +215,7 @@ class NeteaseMusicPlayer(MusicPlayer):
             lyric = res.text
             json_obj = json.loads(lyric)
             lyric = json_obj['lrc']['lyric']
-            lyric = re.sub(r'[\d:.[\]]','', lyric)
+            #lyric = re.sub(r'[\d:.[\]]','', lyric)
             logger.info(lyric)
 
     def next(self):
