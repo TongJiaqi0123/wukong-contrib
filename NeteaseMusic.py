@@ -201,7 +201,6 @@ class NeteaseMusicPlayer(MusicPlayer):
         ##### 因为MusicPlayer对象的Play和Next方法是假定self.playlist的时效性是永久，因此重构play方法来检查playlist的时效性
         if time.time() - self.playlist[self.idx]['expires'] - self.playlist[self.idx]['get_time'] >= 0:
             self.refresh_urls()
-
         path = self.playlist[self.idx]['mp3_url']
         if 'song/media/outer' in path:
             logger.info('{}--{}怀疑未获取到版权, 你可以试试用"play {}"命令试试看~'.format(self.playlist[self.idx]['artist'], self.playlist[self.idx]['song_name'], self.playlist[self.idx]['mp3_url']))
@@ -263,14 +262,12 @@ class NeteaseMusicPlayer(MusicPlayer):
                         song_dict['艺术家'] = song_list[1]
                     elif song_list[0] == 'al':
                         song_dict['专辑'] = song_list[1]
-
-
             # 提取歌词字典中所有的键
             time_list = list(lrc_dict)
             # 排序
             time_list.sort(reverse=True)
-            
             # 此处向下都是测试代码
+            import time
             t = 0
             last_lrc = None
             while True:
@@ -284,7 +281,6 @@ class NeteaseMusicPlayer(MusicPlayer):
                     logger.info(lrc)
                 t += 0.5
                 time.sleep(0.5)
-
 
     # 封装函数：根据时间返回歌词
     def get_lrc_by_time(t):
