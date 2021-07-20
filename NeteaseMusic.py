@@ -195,6 +195,14 @@ class NeteaseMusicPlayer(MusicPlayer):
     def update_user_playlist(self):
         datalist = self.api.dig_info(self.api.user_playlist(self.userid), 'top_playlists')
         self.storage.user_playlist(self.pack_info(datalist, "playlist_id", "playlist_name"))
+        
+    # 封装函数：根据时间返回歌词
+    def get_lrc_by_time(t):
+        for i in time_list:
+            if i <= t:
+                tt = i
+                break
+        return lrc_dict[tt]
 
     def play(self):
         logger.debug('NeteaseMusicPlayer play')
@@ -217,12 +225,16 @@ class NeteaseMusicPlayer(MusicPlayer):
             lyric = json_obj['lrc']['lyric']
             #lyric = re.sub(r'[\d:.[\]]','', lyric)
             logger.info(lyric)
+
             # 准备一个字典，用来保存歌曲信息
             song_dict = {}
+
             # 准备一个字典，用来保存歌词信息
             lrc_dict = {}
+
             # 按照换行进行切割
             str_list = lyric.splitlines()
+
             # 遍历处理
             for string in str_list:
                 # 判断是否是歌词信息
@@ -256,44 +268,32 @@ class NeteaseMusicPlayer(MusicPlayer):
                     # 按照':'进行切割
                     song_list = string.split(':')
                     # 保存到歌曲字典中
-                    if song_list[0] == 'ti':
-                        song_dict['标题'] = song_list[1]
-                    elif song_list[0] == 'ar':
-                        song_dict['艺术家'] = song_list[1]
-                    elif song_list[0] == 'al':
-                        song_dict['专辑'] = song_list[1]
+
+
             # 提取歌词字典中所有的键
             time_list = list(lrc_dict)
             # 排序
             time_list.sort(reverse=True)
+            
             # 此处向下都是测试代码
             import time
+            import os
             t = 0
             last_lrc = None
+
             while True:
                 lrc = get_lrc_by_time(t)
                 if last_lrc != lrc:
                     # 清除原来的显示
                     os.system('cls')
                     last_lrc = lrc
-                    for s in song_dict:
-                        logger.info(s, song_dict[s])
-                    logger.info(lrc)
+                    print(lrc)
                 t += 0.5
                 time.sleep(0.5)
 
-    # 封装函数：根据时间返回歌词
-    def get_lrc_by_time(t):
-        for i in time_list:
-            if i <= t:
-                tt = i
-                break
-        return lrc_dict[tt]
 
-
-
-
-
+            
+            
     def next(self):
         logger.debug('NeteaseMusicPlayer next')
         super(MusicPlayer, self).stop()
