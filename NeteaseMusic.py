@@ -196,13 +196,13 @@ class NeteaseMusicPlayer(MusicPlayer):
         datalist = self.api.dig_info(self.api.user_playlist(self.userid), 'top_playlists')
         self.storage.user_playlist(self.pack_info(datalist, "playlist_id", "playlist_name"))
         
-    # 封装函数：根据时间返回歌词
-    def get_lrc_by_time(self,t):
-        for i in time_list:
-            if i <= t:
-                tt = i
-                break
-        return lrc_dict[tt]
+ # 封装函数：根据时间返回歌词
+    #def get_lrc_by_time(self,t):
+        #for i in time_list:
+            #if i <= t:
+                #tt = i
+                #break
+        #return lrc_dict[tt]
 
     def play(self):
         logger.debug('NeteaseMusicPlayer play')
@@ -221,11 +221,13 @@ class NeteaseMusicPlayer(MusicPlayer):
             url = 'http://music.163.com/api/song/lyric?id='+format(self.playlist[self.idx]['song_id'])+'&lv=1&kv=1&tv=-1'
             res= requests.get(url,headers=headers)
             lyric = res.text
+
             json_obj = json.loads(lyric)
             lyric = json_obj['lrc']['lyric']
             #lyric = re.sub(r'[\d:.[\]]','', lyric)
             logger.info(lyric)
 
+            '''
             # 准备一个字典，用来保存歌曲信息
             song_dict = {}
 
@@ -289,7 +291,7 @@ class NeteaseMusicPlayer(MusicPlayer):
                     logger.info(lrc)
                 t += 0.5
                 time.sleep(0.5)
-            
+            '''
     def next(self):
         logger.debug('NeteaseMusicPlayer next')
         super(MusicPlayer, self).stop()
