@@ -288,11 +288,7 @@ class NeteaseMusicPlayer(MusicPlayer):
                     os.system('cls')
                     last_lrc = lrc
                     print(lrc)
-                t += 0.5
-                time.sleep(0.5)
-
-
-            
+                t += 0.5           
             
     def next(self):
         logger.debug('NeteaseMusicPlayer next')
