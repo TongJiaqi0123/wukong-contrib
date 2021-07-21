@@ -265,9 +265,9 @@ class NeteaseMusicPlayer(MusicPlayer):
 
 
             # 提取歌词字典中所有的键
-            time_list = list(lrc_dict)
+            self.time_list = list(lrc_dict)
             # 排序
-            time_list.sort(reverse=True)
+            self.time_list.sort(reverse=True)
             
             # 此处向下都是测试代码
             
@@ -286,7 +286,8 @@ class NeteaseMusicPlayer(MusicPlayer):
             
     # 封装函数：根据时间返回歌词
     def get_lrc_by_time(self,t):
-        for i in time_list:
+        self.play()
+        for i in self.time_list:
             if i <= t:
                 tt = i
                 break
