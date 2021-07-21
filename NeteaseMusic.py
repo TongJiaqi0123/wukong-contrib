@@ -197,12 +197,12 @@ class NeteaseMusicPlayer(MusicPlayer):
         self.storage.user_playlist(self.pack_info(datalist, "playlist_id", "playlist_name"))
         
  # 封装函数：根据时间返回歌词
-    #def get_lrc_by_time(self,t):
-        #for i in time_list:
-            #if i <= t:
-                #tt = i
-                #break
-        #return lrc_dict[tt]
+    def get_lrc_by_time(self,t):
+        for i in time_list:
+            if i <= t:
+                tt = i
+                break
+        return lrc_dict[tt]
 
     def play(self):
         logger.debug('NeteaseMusicPlayer play')
@@ -227,7 +227,7 @@ class NeteaseMusicPlayer(MusicPlayer):
             #lyric = re.sub(r'[\d:.[\]]','', lyric)
             logger.info(lyric)
 
-            '''
+            
             # 准备一个字典，用来保存歌曲信息
             song_dict = {}
 
@@ -291,7 +291,7 @@ class NeteaseMusicPlayer(MusicPlayer):
                     logger.info(lrc)
                 t += 0.5
                 time.sleep(0.5)
-            '''
+            
     def next(self):
         logger.debug('NeteaseMusicPlayer next')
         super(MusicPlayer, self).stop()
