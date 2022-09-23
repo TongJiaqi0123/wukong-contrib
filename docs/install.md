@@ -30,13 +30,13 @@ docker pull wzpan/wukong-robot:latest
 对于 Linux 系统，可以将 `/dev/snd` 桥接给 docker，这样可以实现声卡的支持：
 
 ``` bash
-docker run -it -p 5000:5000 --device /dev/snd wzpan/wukong-robot:latest
+docker run -it -p 5001:5001 --device /dev/snd wzpan/wukong-robot:latest
 ```
 
 而对于 Mac 和 Windows 系统，则只能放弃声卡的支持：
 
 ``` bash
-docker run -it -p 5000:5000 wzpan/wukong-robot:latest
+docker run -it -p 5001:5001 wzpan/wukong-robot:latest
 ```
 
 因此 Mac 系统更推荐手动安装的方式。而 Windows ，则可以参考 [其他安装方式](#其他安装方式) 中的一键自动安装脚本。
@@ -60,7 +60,7 @@ sudo ./pi_installer
 然后使用如下命令启动 docker 镜像即可：
 
 ``` bash
-docker run -it -p 5000:5000 --device /dev/snd -e LANG=C.UTF-8 wzpan/wukong-robot-arm:latest
+docker run -it -p 5001:5001 --device /dev/snd -e LANG=C.UTF-8 wzpan/wukong-robot-arm:latest
 ```
 
 如果运行时提示
@@ -159,13 +159,6 @@ cp _snowboydetect.so <wukon-robot的根目录/snowboy/>
 
 !> 如果 make 阶段遇到问题，尝试在 [snowboy 项目 issue 中找到解决方案](https://github.com/Kitt-AI/snowboy/issues) 。
 
-使用 Mac 、Ubuntu 16.04 、Deepin 和 Raspberry Pi 系统的用户也可以试试预编译好的版本：
-
-* [Mac](http://hahack-1253537070.file.myqcloud.com/misc/snowboy-mac/_snowboydetect.so)
-* [Ubuntu](http://hahack-1253537070.file.myqcloud.com/misc/snowboy-ubuntu16.04/_snowboydetect.so)
-* [Deepin](http://hahack-1253537070.file.myqcloud.com/misc/snowboy-deepin/_snowboydetect.so)
-* [Raspberry Pi](http://hahack-1253537070.file.myqcloud.com/misc/snowboy-pi/_snowboydetect.so)
-
 ### 5. 安装第三方技能插件库 wukong-contrib
 
 ``` bash
@@ -174,50 +167,6 @@ cd $HOME/.wukong
 git clone http://github.com/wzpan/wukong-contrib.git contrib
 pip3 install -r contrib/requirements.txt
 ```
-
-### 6. 更新唤醒词（可选，树莓派必须）
-
-默认自带的唤醒词是在 Macbook 上录制的，用的是作者的声音模型。但由于不同的人发声不同，所以不保证对于其他人都能很好的适用。
-
-而树莓派上或者其他板子上接的麦克风可能和 PC 上的麦克风的声音畸变差异非常大，所以现有的模型更加不能直接在树莓派上工作，否则效果会非常糟糕。
-
-如果你是第一次使用，需要先创建一个配置文件方便配置唤醒词。这个工作可以交给 wukong-robot 帮你完成。在 wukong-robot 的根目录下执行：
-
-``` bash
-python3 wukong.py
-```
-
-第一次启动将提示你是否要到用户目录下创建一个配置文件，输入 `y` 即可。配置文件将会保存在 `~/.wukong/config.yml` 。
-
-接下来我们来训练和更新唤醒词。比较建议[自行训练自己的模型](/tips?id=_2-%e4%bf%ae%e6%94%b9%e5%94%a4%e9%86%92%e8%af%8d)，然后把模型放在 `~/.wukong` 中，并修改 `~/.wukong/config.yml` 里的几个 hotword 指向的文件名（如果文件名没改，则不用变）。一共有三个唤醒词需要修改：
-
-1. `hotword`：全局唤醒词。默认为 “snowboy” （snowboy.umdl）
-2. `/do_not_bother/on_hotword`：让 wukong-robot 进入勿扰模式的唤醒词。默认为 “悟空别吵” （悟空别吵.pmdl）
-3. `/do_not_bother/off_hotword`：让 wukong-robot 结束勿扰模式的唤醒词。默认为 “悟空醒醒” （悟空醒醒.pmdl）
-
-对于树莓派用户，如果不想自己训练模型，wukong-robot 也提供了几个针对树莓派训练的模型，直接修改配置即可：
-
-``` yaml
-# snowboy 离线唤醒
-# 建议使用 snowboy-seasalt (https://snowboy.hahack.com)
-# 使用相同环境录入你的语音，以提升唤醒成功率和准确率
-hotword: 'wukong_pi.pmdl'  # 唤醒词模型，如要自定义请放到 $HOME/.wukong 目录中
-sensitivity: 0.4  # 灵敏度
-
-# 勿扰模式，该时间段内自动进入睡眠，避免监听
-do_not_bother:
-    enable: false # 开启勿扰模式
-    since: 23    # 开始时间
-    till: 9      # 结束时间，如果比 since 小表示第二天
-    on_hotword: '悟空别吵_pi.pmdl'  # 通过这个唤醒词可切换勿扰模式。默认是“悟空别吵”
-    off_hotword: '悟空醒醒_pi.pmdl'  # 通过这个唤醒词可切换勿扰模式。默认是“悟空醒醒”
-```
-
-但是建议[自己训练](/tips?id=_2-%e4%bf%ae%e6%94%b9%e5%94%a4%e9%86%92%e8%af%8d)。snowboy 官方建议在树莓派上先用 `rec t.wav` 这样的命令录制唤醒词，然后在训练的时候通过上传按钮上传到服务器中进行训练：
-
-![](https://github.com/rhasspy/snowboy-seasalt/raw/master/screenshot.png)
-
-- 完成后修改下 config.yml 把唤醒词改成刚刚训练的唤醒词即可。
 
 #### CentOS 没声音问题解决
 
